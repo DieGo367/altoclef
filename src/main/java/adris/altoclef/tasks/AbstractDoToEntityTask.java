@@ -32,14 +32,14 @@ public abstract class AbstractDoToEntityTask extends Task implements ITaskRequir
     @Override
     protected void onStart(AltoClef mod) {
         _wanderTask.resetWander();
-        _progress.reset();
+        _progress.reset(mod);
     }
 
     @Override
     protected Task onTick(AltoClef mod) {
 
         if (_wanderTask.isActive() && !_wanderTask.isFinished(mod)) {
-            _progress.reset();
+            _progress.reset(mod);
             setDebugState("Failed to get to target, wandering for a bit.");
             return _wanderTask;
         }
@@ -77,7 +77,7 @@ public abstract class AbstractDoToEntityTask extends Task implements ITaskRequir
         }
 
         if (entity.squaredDistanceTo(mod.getPlayer()) < playerReach*playerReach && result != null && result.getType() == HitResult.Type.ENTITY) {
-            _progress.reset();
+            _progress.reset(mod);
             return onEntityInteract(mod, entity);
         } else if (!tooClose) {
             setDebugState("Approaching target");
@@ -106,6 +106,7 @@ public abstract class AbstractDoToEntityTask extends Task implements ITaskRequir
         }
         return false;
     }
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean doubleCheck(double a, double b) {
         if (Double.isInfinite(a) == Double.isInfinite(b)) return true;
         return Math.abs(a - b) < 0.1;

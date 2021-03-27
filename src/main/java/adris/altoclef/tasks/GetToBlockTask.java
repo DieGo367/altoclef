@@ -30,7 +30,7 @@ public class GetToBlockTask extends Task implements ITaskRequiresGrounded {
     @Override
     protected void onStart(AltoClef mod) {
         startProc(mod);
-        _moveChecker.reset();
+        _moveChecker.reset(mod);
         _wanderTask.resetWander();
     }
 
@@ -40,7 +40,7 @@ public class GetToBlockTask extends Task implements ITaskRequiresGrounded {
         // Wander
         if (_wanderTask.isActive() && !_wanderTask.isFinished(mod)) {
             setDebugState("Wandering...");
-            _moveChecker.reset();
+            _moveChecker.reset(mod);
             return _wanderTask;
         }
 

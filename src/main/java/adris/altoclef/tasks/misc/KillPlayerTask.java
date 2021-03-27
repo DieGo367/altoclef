@@ -32,7 +32,7 @@ public class KillPlayerTask extends AbstractKillEntityTask {
             }
             _distancePlayerCheck.setProgress(-1 * distSq);
             if (!_distancePlayerCheck.failed()) {
-                _progress.reset();
+                _progress.reset(mod);
             }
         }
         return super.onTick(mod);

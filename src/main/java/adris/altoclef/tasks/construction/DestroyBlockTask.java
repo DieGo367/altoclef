@@ -38,12 +38,12 @@ public class DestroyBlockTask extends Task implements ITaskRequiresGrounded {
 
         // Wander and check
         if (_wanderTask.isActive() && !_wanderTask.isFinished(mod)) {
-            _moveChecker.reset();
+            _moveChecker.reset(mod);
             return _wanderTask;
         }
         if (!_moveChecker.check(mod)) {
             _failedFirstTry = !_failedFirstTry;
-            _moveChecker.reset();
+            _moveChecker.reset(mod);
             // Only when we've tried both outcomes and have looped back to the beginning do we wander.
             if (!_failedFirstTry) {
                 Debug.logMessage("Failed both ways, wandering for a bit...");

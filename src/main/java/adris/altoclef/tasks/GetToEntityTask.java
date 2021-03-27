@@ -29,7 +29,7 @@ public class GetToEntityTask extends Task implements ITaskRequiresGrounded {
     protected Task onTick(AltoClef mod) {
 
         if (_wanderTask.isActive() && !_wanderTask.isFinished(mod)) {
-            _progress.reset();
+            _progress.reset(mod);
             setDebugState("Failed to get to target, wandering for a bit.");
             return _wanderTask;
         }

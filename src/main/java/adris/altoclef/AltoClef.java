@@ -263,10 +263,11 @@ public class AltoClef implements ModInitializer {
 
     // Are we in game (playing in a server/world)
     public boolean inGame() {
-        return getPlayer() != null;
+        return getPlayer() != null && getWorld() != null;
     }
 
     public Dimension getCurrentDimension() {
+        if (!inGame()) return Dimension.OVERWORLD;
         if (getWorld().getDimension().isUltrawarm()) return Dimension.NETHER;
         if (getWorld().getDimension().isNatural()) return Dimension.OVERWORLD;
         return Dimension.END;

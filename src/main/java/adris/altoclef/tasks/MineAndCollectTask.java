@@ -152,7 +152,7 @@ public class MineAndCollectTask extends ResourceTask {
 
         private final Set<BlockPos> _blacklist = new HashSet<>();
 
-        private final MovementProgressChecker _progressChecker = new MovementProgressChecker(1);
+        private final MovementProgressChecker _progressChecker = new MovementProgressChecker(2);
 
         private final Task _pickupTask;
 
@@ -231,7 +231,7 @@ public class MineAndCollectTask extends ResourceTask {
             if (obj instanceof BlockPos) {
                 BlockPos newPos = (BlockPos) obj;
                 if (_miningPos == null || !_miningPos.equals(newPos)) {
-                    _progressChecker.reset();
+                    _progressChecker.reset(_mod);
                 }
                 _miningPos = newPos;
                 return new DestroyBlockTask(_miningPos);
@@ -267,7 +267,7 @@ public class MineAndCollectTask extends ResourceTask {
 
         @Override
         protected void onStart(AltoClef mod) {
-            _progressChecker.reset();
+            _progressChecker.reset(mod);
             _miningPos = null;
         }
 

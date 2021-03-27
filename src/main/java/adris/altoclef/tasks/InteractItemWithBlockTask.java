@@ -67,7 +67,7 @@ public class InteractItemWithBlockTask extends Task {
     @Override
     protected void onStart(AltoClef mod) {
         _trying = false;
-        _moveChecker.reset();
+        _moveChecker.reset(mod);
         _wanderTask.resetWander();
     }
 
@@ -75,13 +75,13 @@ public class InteractItemWithBlockTask extends Task {
     protected Task onTick(AltoClef mod) {
 
         if (_toUse != null && !mod.getInventoryTracker().targetMet(_toUse)) {
-            _moveChecker.reset();
+            _moveChecker.reset(mod);
             return TaskCatalogue.getItemTask(_toUse);
         }
 
         // Wander and check
         if (_wanderTask.isActive() && !_wanderTask.isFinished(mod)) {
-            _moveChecker.reset();
+            _moveChecker.reset(mod);
             return _wanderTask;
         }
         if (!_moveChecker.check(mod)) {
@@ -99,7 +99,7 @@ public class InteractItemWithBlockTask extends Task {
         } else {
             if (_prevReach < MAX_REACH && proc(mod).reachCounter != _prevReach) {
                 _prevReach = proc(mod).reachCounter;
-                _moveChecker.reset();
+                _moveChecker.reset(mod);
             }
         }
 

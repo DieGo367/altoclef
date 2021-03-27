@@ -26,7 +26,7 @@ public abstract class CustomBaritoneGoalTask extends Task implements ITaskRequir
     @Override
     protected void onStart(AltoClef mod) {
         mod.getClientBaritone().getCustomGoalProcess().onLostControl();
-        _checker.reset();
+        _checker.reset(mod);
     }
 
     @Override
@@ -35,7 +35,7 @@ public abstract class CustomBaritoneGoalTask extends Task implements ITaskRequir
         if (_wander) {
             if (_wanderTask.isActive() && !_wanderTask.isFinished(mod)) {
                 setDebugState("Wandering...");
-                _checker.reset();
+                _checker.reset(mod);
                 return _wanderTask;
             }
             if (!_checker.check(mod)) {

@@ -87,6 +87,9 @@ public class ConstructNetherPortalBucketTask extends Task {
 
     private final Timer _refreshTimer = new Timer(11);
 
+    // Used to prevent premature loiter fail.
+    private int _previousObsidianCount = 0;
+
     @Override
     protected void onStart(AltoClef mod) {
 
@@ -135,7 +138,7 @@ public class ConstructNetherPortalBucketTask extends Task {
         // Protect some used items
         mod.getConfigState().addProtectedItems(Items.WATER_BUCKET, Items.LAVA_BUCKET, Items.FLINT_AND_STEEL);
 
-        _progressChecker.reset();
+        _progressChecker.reset(mod);
     }
 
     @Override
@@ -174,7 +177,7 @@ public class ConstructNetherPortalBucketTask extends Task {
 
         if (_wanderTask.isActive() && !_wanderTask.isFinished(mod)) {
             setDebugState("Wandering before retrying...");
-            _progressChecker.reset();
+            _progressChecker.reset(mod);
             return _wanderTask;
         }
 
@@ -187,24 +190,24 @@ public class ConstructNetherPortalBucketTask extends Task {
         int bucketCount = mod.getInventoryTracker().getItemCount(Items.BUCKET, Items.LAVA_BUCKET, Items.WATER_BUCKET);
         if (bucketCount < 2) {
             setDebugState("Getting buckets");
-            _progressChecker.reset();
+            _progressChecker.reset(mod);
             return TaskCatalogue.getItemTask("bucket", 2);
         }
 
         // Get flint & steel if we don't have one
         if (!mod.getInventoryTracker().hasItem(Items.FLINT_AND_STEEL)) {
             setDebugState("Getting flint & steel");
-            _progressChecker.reset();
+            _progressChecker.reset(mod);
             return TaskCatalogue.getItemTask("flint_and_steel", 1);
         }
 
         boolean needsToLookForPortal = _portalOrigin == null;
         if (needsToLookForPortal) {
-            _progressChecker.reset();
+            _progressChecker.reset(mod);
             // Get water before searching, just for convenience.
             if (!mod.getInventoryTracker().hasItem(Items.WATER_BUCKET)) {
                 setDebugState("Getting water");
-                _progressChecker.reset();
+                _progressChecker.reset(mod);
                 return TaskCatalogue.getItemTask("water_bucket", 1);
             }
 
@@ -236,10 +239,12 @@ public class ConstructNetherPortalBucketTask extends Task {
         }
 
         // We have a portal, now build it.
+        int satisfied = 0;
         for (Vec3i framePosRelative : PORTAL_FRAME) {
             BlockPos framePos = _portalOrigin.add(framePosRelative);
             Block frameBlock = mod.getWorld().getBlockState(framePos).getBlock();
             if (frameBlock == Blocks.OBSIDIAN) {
+                satisfied++;
                 // Already satisfied, clear water above if need be.
                 BlockPos waterCheck = framePos.up();
                 if (mod.getWorld().getBlockState(waterCheck).getBlock() == Blocks.WATER && WorldUtil.isSourceBlock(mod, waterCheck)) {
@@ -248,17 +253,21 @@ public class ConstructNetherPortalBucketTask extends Task {
                 }
                 continue;
             }
+            if (satisfied > _previousObsidianCount) {
+                _previousObsidianCount = satisfied;
+                _progressChecker.reset(mod);
+            }
 
             // Get lava early so placing it is faster
             if (!mod.getInventoryTracker().hasItem(Items.LAVA_BUCKET) && frameBlock != Blocks.LAVA) {
                 setDebugState("Collecting lava");
-                _progressChecker.reset();
+                _progressChecker.reset(mod);
                 return _collectLavaTask;
             }
 
             if (_currentCastTarget == null || !_currentLavaTarget.equals(framePos)) {
                 // We need to place obsidian here.
-                _progressChecker.reset();
+                _progressChecker.reset(mod);
                 _currentLavaTarget = framePos;
                 _currentCastTarget = null;
             }

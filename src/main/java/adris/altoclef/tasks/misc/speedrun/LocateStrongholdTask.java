@@ -25,9 +25,9 @@ import java.util.List;
 
 public class LocateStrongholdTask extends Task {
 
-    private static final int EYE_THROW_MINIMUM_Y_POSITION = 68;
+    private static final int EYE_THROW_MINIMUM_Y_POSITION = 63;
 
-    private static final int EYE_RETHROW_DISTANCE = 1000;
+    private static final int EYE_RETHROW_DISTANCE = 2000;
 
     private final List<BlockPos> _cachedPortalFrame = new ArrayList<>();
 

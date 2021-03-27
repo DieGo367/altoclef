@@ -4,36 +4,23 @@ import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
 import adris.altoclef.TaskCatalogue;
 import adris.altoclef.tasks.DoToClosestBlockTask;
-import adris.altoclef.tasks.GetToBlockTask;
 import adris.altoclef.tasks.InteractItemWithBlockTask;
 import adris.altoclef.tasks.ResourceTask;
 import adris.altoclef.tasks.construction.DestroyBlockTask;
 import adris.altoclef.tasks.misc.TimeoutWanderTask;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.ItemTarget;
-import adris.altoclef.util.ProjectileUtil;
 import adris.altoclef.util.WorldUtil;
 import adris.altoclef.util.csharpisbetter.ActionListener;
 import adris.altoclef.util.csharpisbetter.Timer;
 import adris.altoclef.util.csharpisbetter.Util;
-import adris.altoclef.util.progresscheck.DistanceProgressChecker;
-import adris.altoclef.util.progresscheck.IProgressChecker;
-import adris.altoclef.util.progresscheck.LinearProgressChecker;
 import adris.altoclef.util.progresscheck.MovementProgressChecker;
-import baritone.api.utils.IPlayerContext;
-import baritone.api.utils.RayTraceUtils;
 import baritone.api.utils.Rotation;
-import baritone.api.utils.RotationUtils;
-import baritone.api.utils.input.Input;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.FluidBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -97,7 +84,7 @@ public class CollectBucketLiquidTask extends ResourceTask {
 
         _wanderTask.resetWander();
 
-        _progressChecker.reset();
+        _progressChecker.reset(mod);
     }
 
 
@@ -119,7 +106,7 @@ public class CollectBucketLiquidTask extends ResourceTask {
                     MinecraftClient.getInstance().options.keyUse.setPressed(true);
                     mod.getExtraBaritoneSettings().setInteractionPaused(true);
                     _pickedUpTimer.reset();
-                    _progressChecker.reset();
+                    _progressChecker.reset(mod);
                     return null;
                 }
             }
@@ -128,7 +115,7 @@ public class CollectBucketLiquidTask extends ResourceTask {
         if (!_pickedUpTimer.elapsed()) {
             MinecraftClient.getInstance().options.keyUse.setPressed(false);
             mod.getExtraBaritoneSettings().setInteractionPaused(false);
-            _progressChecker.reset();
+            _progressChecker.reset(mod);
             // Wait for force pickup
             return null;
         }
@@ -136,7 +123,7 @@ public class CollectBucketLiquidTask extends ResourceTask {
         if (_wanderTask.isActive() && !_wanderTask.isFinished(mod)) {
             setDebugState("Failed to receive: Wandering.");
             _reachTimer.reset();
-            _progressChecker.reset();
+            _progressChecker.reset(mod);
             return _wanderTask;
         }
 

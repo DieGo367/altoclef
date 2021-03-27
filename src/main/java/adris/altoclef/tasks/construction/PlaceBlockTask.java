@@ -4,15 +4,12 @@ import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
 import adris.altoclef.TaskCatalogue;
 import adris.altoclef.tasks.GetToBlockTask;
-import adris.altoclef.tasks.MineAndCollectTask;
 import adris.altoclef.tasks.misc.TimeoutWanderTask;
 import adris.altoclef.tasksystem.ITaskRequiresGrounded;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.ItemTarget;
-import adris.altoclef.util.MiningRequirement;
 import adris.altoclef.util.WorldUtil;
 import adris.altoclef.util.csharpisbetter.Util;
-import adris.altoclef.util.progresscheck.LinearProgressChecker;
 import adris.altoclef.util.progresscheck.MovementProgressChecker;
 import baritone.api.schematic.AbstractSchematic;
 import baritone.api.schematic.ISchematic;
@@ -21,7 +18,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 
@@ -57,7 +53,7 @@ public class PlaceBlockTask extends Task implements ITaskRequiresGrounded {
 
     @Override
     protected void onStart(AltoClef mod) {
-        _progressChecker.reset();
+        _progressChecker.reset(mod);
         _wanderTask.resetWander();
     }
 
@@ -67,7 +63,7 @@ public class PlaceBlockTask extends Task implements ITaskRequiresGrounded {
         // Perform timeout wander
         if (_wanderTask.isActive() && !_wanderTask.isFinished(mod)) {
             setDebugState("Wandering.");
-            _progressChecker.reset();
+            _progressChecker.reset(mod);
             return _wanderTask;
         }
 
@@ -85,7 +81,7 @@ public class PlaceBlockTask extends Task implements ITaskRequiresGrounded {
             if (getMaterialCount(mod) < MIN_MATERIALS) {
                 // TODO: Mine items, extract their resource key somehow.
                 _materialTask = getMaterialTask(PREFERRED_MATERIALS);
-                _progressChecker.reset();
+                _progressChecker.reset(mod);
                 return _materialTask;
             }
         }

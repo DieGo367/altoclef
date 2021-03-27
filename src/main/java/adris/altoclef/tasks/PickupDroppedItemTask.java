@@ -67,13 +67,13 @@ public class PickupDroppedItemTask extends AbstractDoToClosestObjectTask<ItemEnt
     protected Task onTick(AltoClef mod) {
         if (_wanderTask.isActive() && !_wanderTask.isFinished(mod)) {
             setDebugState("Wandering after blacklisting item...");
-            _progressChecker.reset();
+            _progressChecker.reset(mod);
             return _wanderTask;
         }
 
         // If we're getting a pickaxe for THIS resource...
         if (isIsGettingPickaxeFirst(mod) && _collectingPickaxeForThisResource && !mod.getInventoryTracker().miningRequirementMet(MiningRequirement.STONE)) {
-            _progressChecker.reset();
+            _progressChecker.reset(mod);
             setDebugState("Collecting pickaxe first");
             return getPickaxeFirstTask;
         } else {
@@ -84,7 +84,7 @@ public class PickupDroppedItemTask extends AbstractDoToClosestObjectTask<ItemEnt
         }
 
         if (!_progressChecker.check(mod)) {
-            _progressChecker.reset();
+            _progressChecker.reset(mod);
             if (_currentDrop != null) {
                 // We might want to get a pickaxe first.
                 if (!isGettingPickaxeFirstFlag && mod.getModSettings().shouldCollectPickaxeFirst() && !mod.getInventoryTracker().miningRequirementMet(MiningRequirement.STONE)) {

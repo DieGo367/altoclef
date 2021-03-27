@@ -141,12 +141,12 @@ public class CollectObsidianTask extends ResourceTask {
             if (_lavaWaitCurrentPos == null || !nearestLava.equals(_lavaWaitCurrentPos)) {
                 // We found a new lava to pursue.
                 _lavaWaitCurrentPos = nearestLava;
-                _lavaTimeout.reset();
+                _lavaTimeout.reset(mod);
             }
 
             // Collect water first
             if (!mod.getInventoryTracker().hasItem(Items.WATER_BUCKET)) {
-                _lavaTimeout.reset();
+                _lavaTimeout.reset(mod);
                 _forceCompleteTask = TaskCatalogue.getItemTask("water_bucket", 1);
                 setDebugState("Getting water bucket");
                 return _forceCompleteTask;
@@ -176,7 +176,7 @@ public class CollectObsidianTask extends ResourceTask {
             //_placeWaterTimeout.reset();
             return new InteractItemWithBlockTask(TaskCatalogue.getItemTarget("water_bucket", 1), Direction.WEST, placeOnPos, true);
         } else {
-            _lavaTimeout.reset();
+            _lavaTimeout.reset(mod);
         }
 
         setDebugState("Wandering, no obsidian/lava found.");
